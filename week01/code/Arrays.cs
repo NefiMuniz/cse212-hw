@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 public static class Arrays
 {
     /// <summary>
@@ -9,11 +12,20 @@ public static class Arrays
     public static double[] MultiplesOf(double number, int length)
     {
         // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // 1 A way to validate the inputs when the user provide it
 
-        return []; // replace this return statement with your own
+        // 2 Create an array
+        var multiples = new double[length];
+
+        // 3 looping to calculate each multiple
+        for (int i = 0; i < length; i++)
+        {
+            // calculation
+            multiples[i] = number * (i + 1);
+        }
+
+        // 4 results
+        return multiples;
     }
 
     /// <summary>
@@ -26,8 +38,28 @@ public static class Arrays
     public static void RotateListRight(List<int> data, int amount)
     {
         // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // 1 Determine the effective rotation with modulo
+        int rotation = amount % data.Count;
+
+        // 2 Create a temp list to store rotated data
+        var rotated = new List<int>(data.Count);
+
+        // 3 Iterate and add the elements
+        for (int i = data.Count - rotation; i < data.Count; i++)
+        {
+            rotated.Add(data[i]);
+        }
+
+        // 4 Add the remaining from original list to the rotated one
+        for (int i = 0; i < data.Count - rotation; i++)
+        {
+            rotated.Add(data[i]);
+        }
+
+        // 5 Replace the original list with the rotated list elements
+        for (int i = 0; i < data.Count; i++)
+        {
+            data[i] = rotated[i];
+        }
     }
 }
