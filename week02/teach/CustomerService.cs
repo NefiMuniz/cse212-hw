@@ -5,24 +5,30 @@
 public class CustomerService {
     public static void Run() {
         // Example code to see what's in the customer service queue:
-        // var cs = new CustomerService(10);
-        // Console.WriteLine(cs);
+        var cs = new CustomerService(2);
 
         // Test Cases
 
         // Test 1
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: Add more then qeue
+        // Expected Result: error
         Console.WriteLine("Test 1");
+        cs.AddNewCustomer();
+        cs.AddNewCustomer();
+        cs.AddNewCustomer();
+        Console.WriteLine(cs);
 
         // Defect(s) Found: 
 
         Console.WriteLine("=================");
 
         // Test 2
-        // Scenario: 
-        // Expected Result: 
+        // Scenario: Atender mais do que tem
+        // Expected Result: Comer o lanche extra
         Console.WriteLine("Test 2");
+        cs.ServeCustomer();
+        cs.ServeCustomer();
+        cs.ServeCustomer();
 
         // Defect(s) Found: 
 
@@ -36,7 +42,7 @@ public class CustomerService {
 
     public CustomerService(int maxSize) {
         if (maxSize <= 0)
-            _maxSize = 10;
+            _maxSize = 2;
         else
             _maxSize = maxSize;
     }
@@ -67,7 +73,7 @@ public class CustomerService {
     /// </summary>
     private void AddNewCustomer() {
         // Verify there is room in the service queue
-        if (_queue.Count > _maxSize) {
+        if (_queue.Count >= _maxSize) {
             Console.WriteLine("Maximum Number of Customers in Queue.");
             return;
         }
@@ -88,9 +94,16 @@ public class CustomerService {
     /// Dequeue the next customer and display the information.
     /// </summary>
     private void ServeCustomer() {
-        _queue.RemoveAt(0);
+        if (_queue.Count <= 0) {
+            Console.WriteLine("Ninguém na fila.");
+            return;
+        }
+        
         var customer = _queue[0];
+        _queue.RemoveAt(0);
         Console.WriteLine(customer);
+        
+
     }
 
     /// <summary>
