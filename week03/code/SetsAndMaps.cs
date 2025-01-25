@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json;
 
 public static class SetsAndMaps
@@ -22,7 +23,26 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        // HashSet for words
+        var wordSet = new HashSet<string>();
+        // List for results
+        var result = new List<string>();
+
+        foreach (var word in words)
+        {
+            // Reverse words to check if the HashSet cointains it
+            var reversedWord = new string(new[] { word[1], word[0] });
+
+            if (wordSet.Contains(reversedWord))
+            {
+                result.Add($"{reversedWord} & {word}");
+            }
+            else
+            {
+                wordSet.Add(word);
+            }
+        }
+        return result.ToArray();
     }
 
     /// <summary>
@@ -38,11 +58,25 @@ public static class SetsAndMaps
     /// <returns>fixed array of divisors</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
+        // Create dictionary
         var degrees = new Dictionary<string, int>();
+
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+            // Extract the 4th column information
+            var degree = fields[3];
+
+            // Handling the count
+            if (degrees.ContainsKey(degree))
+            {
+                degrees[degree]++;
+            }
+            else
+            {
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -67,7 +101,36 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Normalize the strings: remove spaces, convert to lowercase
+        string normalized1 = new string(word1.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+        string normalized2 = new string(word2.Where(char.IsLetterOrDigit).ToArray()).ToLower();
+
+        // Early exit if the lengths of normalized strings differ
+        if (normalized1.Length != normalized2.Length)
+            return false;
+
+        // Use a dictionary to count character frequencies
+        var charCounts = new Dictionary<char, int>();
+
+        // Count characters in the first string
+        foreach (char c in normalized1)
+        {
+            if (charCounts.ContainsKey(c))
+                charCounts[c]++;
+            else
+                charCounts[c] = 1;
+        }
+
+        // Subtract character counts based on the second string
+        foreach (char c in normalized2)
+        {
+            if (!charCounts.ContainsKey(c) || charCounts[c] == 0)
+                return false; // Character not found or count doesn't match
+            charCounts[c]--;
+        }
+
+        // Ensure all counts are zero (optional since lengths are equal)
+        return charCounts.Values.All(count => count == 0);
     }
 
     /// <summary>
@@ -100,7 +163,11 @@ public static class SetsAndMaps
         // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
+        var earthquakeSummaries = featureCollection?.Features
+            .Where(f => f.Properties?.Mag.HasValue == true && !string.IsNullOrWhiteSpace(f.Properties.Place))
+            .Select(f => $"{f.Properties.Place} - Mag {f.Properties.Mag:F1}")
+            .ToArray();
         // 3. Return an array of these string descriptions.
-        return [];
+        return earthquakeSummaries ?? Array.Empty<string>();
     }
 }
